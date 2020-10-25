@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Button,
   Col,
@@ -9,10 +9,22 @@ import {
 } from 'react-bootstrap';
 import { LinkContainer } from 'react-router-bootstrap';
 import Rating from '../Components/Rating';
-import products from '../products';
+import { getItem } from '../services/products';
 
 const ProductScreen = ({ match }) => {
-  const product = products.find((p) => p._id === match.params.id);
+  const [product, setProduct] = useState(null);
+  const { id } = match.params;
+
+  useEffect(() => {
+    const retriveItem = async () => {
+      const data = await getItem(id);
+      setProduct(data);
+    };
+
+    retriveItem();
+  }, [id]);
+
+  if (!product) return null;
 
   return (
     <>
