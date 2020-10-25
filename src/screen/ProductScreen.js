@@ -1,7 +1,58 @@
 import React from 'react';
+import {
+  Button,
+  Col,
+  Image,
+  ListGroup,
+  ListGroupItem,
+  Row,
+} from 'react-bootstrap';
+import { LinkContainer } from 'react-router-bootstrap';
+import Rating from '../Components/Rating';
+import products from '../products';
 
-const ProductScreen = () => {
-  return <div>Product</div>;
+const ProductScreen = ({ match }) => {
+  const product = products.find((p) => p._id === match.params.id);
+
+  return (
+    <>
+      <LinkContainer to="/">
+        <Button variant="light" className="my-3">
+          Back
+        </Button>
+      </LinkContainer>
+      <Row>
+        <Col md={6}>
+          <Image src={product.image} alt={product.name} fluid />
+        </Col>
+        <Col md={3}>
+          <ListGroup variant="flush">
+            <ListGroupItem>
+              <h3>{product.name}</h3>
+            </ListGroupItem>
+            <ListGroupItem>
+              <Rating rating={product.rating} numReviews={product.numReviews} />
+            </ListGroupItem>
+            <ListGroupItem>Price: ${product.price}</ListGroupItem>
+            <ListGroupItem>Description: ${product.description}</ListGroupItem>
+          </ListGroup>
+        </Col>
+        <Col md={3}>
+          <ListGroup>
+            <ListGroupItem>
+              Status: {product.countInStock > 0 ? 'In Stock' : 'Out of Stock'}
+            </ListGroupItem>
+            <ListGroupItem>Price: {product.price}</ListGroupItem>
+            <ListGroupItem>
+              <Button block disabled={product.countInStock === 0}>
+                Add To Cart
+              </Button>
+            </ListGroupItem>
+          </ListGroup>
+        </Col>
+      </Row>
+    </>
+  );
 };
 
 export default ProductScreen;
