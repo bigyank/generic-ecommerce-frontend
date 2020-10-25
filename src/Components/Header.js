@@ -1,8 +1,7 @@
 import React from 'react';
 import { Navbar, Nav, Container } from 'react-bootstrap';
-import PropTypes from 'prop-types';
 
-const Header = (props) => {
+const Header = () => {
   return (
     <header>
       <Navbar bg="dark" variant="dark" expand="lg" collapseOnSelect>
@@ -26,7 +25,5 @@ const Header = (props) => {
     </header>
   );
 };
-
-Header.propTypes = {};
 
 export default Header;

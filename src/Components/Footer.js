@@ -1,8 +1,7 @@
 import React from 'react';
 import { Container, Row, Col } from 'react-bootstrap';
-import PropTypes from 'prop-types';
 
-const Footer = (props) => {
+const Footer = () => {
   return (
     <footer>
       <Container>
@@ -13,7 +12,5 @@ const Footer = (props) => {
     </footer>
   );
 };
-
-Footer.propTypes = {};
 
 export default Footer;
