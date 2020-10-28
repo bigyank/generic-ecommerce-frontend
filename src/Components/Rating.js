@@ -1,10 +1,13 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 
 const Rating = ({ rating, numReviews }) => {
-  const isInt = function (n) {
-    return parseInt(n) === n;
+  const isFloat = function (n) {
+    return parseInt(n) !== n;
   };
+
+  if (typeof rating !== 'number') {
+    return null;
+  }
 
   return (
     <div>
@@ -15,7 +18,7 @@ const Rating = ({ rating, numReviews }) => {
         ))}
 
         {/* add halfstar if needed */}
-        {!isInt(rating) && <i className="fas fa-star-half-alt"></i>}
+        {isFloat(rating) && <i className="fas fa-star-half-alt"></i>}
 
         {/* remaining empty star out of 5 */}
         {[...Array(5 - Math.ceil(rating))].map((_, index) => (
@@ -25,11 +28,6 @@ const Rating = ({ rating, numReviews }) => {
       <span style={{ marginLeft: '0.5rem' }}>{numReviews} reviews</span>
     </div>
   );
-};
-
-Rating.propTypes = {
-  rating: PropTypes.number.isRequired,
-  numReviews: PropTypes.number.isRequired,
 };
 
 export default Rating;
