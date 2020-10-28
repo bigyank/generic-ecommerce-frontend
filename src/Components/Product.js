@@ -7,11 +7,11 @@ import { Link } from 'react-router-dom';
 const Product = ({ product }) => {
   return (
     <Card className="my-3 p-3 rounded">
-      <Link to={`/product/${product._id}`}>
+      <Link to={`/product/${product.id}`}>
         <Card.Img src={product.image} variant="top" />
       </Link>
       <Card.Body>
-        <Link to={`/product/${product._id}`}>
+        <Link to={`/product/${product.id}`}>
           <Card.Title as="div">
             <strong>{product.name}</strong>
           </Card.Title>
@@ -26,8 +26,8 @@ const Product = ({ product }) => {
 };
 
 Product.propTypes = {
-  product: PropTypes.exact({
-    _id: PropTypes.string,
+  product: PropTypes.shape({
+    id: PropTypes.string,
     name: PropTypes.string,
     image: PropTypes.string,
     description: PropTypes.string,
