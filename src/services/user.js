@@ -9,3 +9,13 @@ export const userLogin = async (email, password) => {
   });
   return response.data;
 };
+
+export const userSignup = async (name, email, password) => {
+  const response = await axios.post(BASE_URL.concat(`/signup`), {
+    name,
+    email,
+    password,
+  });
+
+  return response.data;
+};
