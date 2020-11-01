@@ -30,3 +30,8 @@ export const userLoginAction = (email, password) => async (dispatch) => {
     dispatch({ type: USER_LOGIN_FAIL, payload: error.response.data.message });
   }
 };
+
+export const userLogoutAction = () => {
+  localStorage.removeItem('userInfo');
+  return { type: USER_LOGOUT };
+};
