@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import {
   Button,
   Row,
@@ -12,8 +12,11 @@ import { useDispatch, useSelector } from 'react-redux';
 import Message from '../Components/Message';
 import CheckoutSteps from '../Components/CheckOutSteps';
 import { Link } from 'react-router-dom';
+import { createOrder } from '../reducers/orderReducer';
 
-const PlaceOrderScreen = () => {
+const PlaceOrderScreen = ({ history }) => {
+  const dispatch = useDispatch();
+
   const cart = useSelector((state) => state.cart);
 
   const addDecimals = (num) => {
@@ -33,7 +36,28 @@ const PlaceOrderScreen = () => {
     Number(cart.taxPrice)
   ).toFixed(2);
 
-  const placeOrderHandler = (e) => e;
+  const { order, success, error } = useSelector((state) => state.orderCreate);
+
+  useEffect(() => {
+    if (success) {
+      history.push(`/order/${order.id}`);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [success, history]);
+
+  const placeOrderHandler = () => {
+    dispatch(
+      createOrder({
+        orderItems: cart.cartItems,
+        shippingAddress: cart.shippingAddress,
+        paymentMethod: cart.paymentMethod,
+        itemsPrice: cart.itemsPrice,
+        shippingPrice: cart.shippingPrice,
+        taxPrice: cart.taxPrice,
+        totalPrice: cart.totalPrice,
+      })
+    );
+  };
 
   return (
     <>
@@ -121,6 +145,10 @@ const PlaceOrderScreen = () => {
                   <Col>Total</Col>
                   <Col>${cart.totalPrice}</Col>
                 </Row>
+              </ListGroupItem>
+
+              <ListGroupItem>
+                {error && <Message variant="danger">{error}</Message>}
               </ListGroupItem>
 
               <ListGroupItem>
