@@ -9,7 +9,10 @@ import { userLoginReducer } from './reducers/loginReducer';
 import { userRegisterReducer } from './reducers/registerReducer';
 import { userDeatilsReducer } from './reducers/profileReducer';
 import { updateProfileReducer } from './reducers/updateProfileReducer';
-import { orderCreateReducer } from './reducers/orderReducer';
+import {
+  orderCreateReducer,
+  orderDetailsReducer,
+} from './reducers/orderReducer';
 
 const reducers = combineReducers({
   productList: productListReducer,
@@ -20,6 +23,7 @@ const reducers = combineReducers({
   userDetails: userDeatilsReducer,
   userUpdateProfile: updateProfileReducer,
   orderCreate: orderCreateReducer,
+  orderDetails: orderDetailsReducer,
 });
 
 const cartItemsFromStorage = localStorage.getItem('cartItems')
