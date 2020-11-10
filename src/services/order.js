@@ -20,6 +20,6 @@ export const getDetails = async (token, id) => {
     },
   };
 
-  const response = await axios.post(BASE_URL.concat(`/${id}`), config);
+  const response = await axios.get(BASE_URL.concat(`/${id}`), config);
   return response.data;
 };
