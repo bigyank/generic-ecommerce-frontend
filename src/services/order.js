@@ -38,3 +38,14 @@ export const updatePay = async (token, id, paymentResult) => {
   );
   return response.data;
 };
+
+export const userOrder = async (token) => {
+  const config = {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  };
+
+  const response = await axios.get(BASE_URL.concat('/myorders'), config);
+  return response.data;
+};

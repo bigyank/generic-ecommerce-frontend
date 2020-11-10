@@ -1,4 +1,4 @@
-import { makeOrder, getDetails, updatePay } from '../services/order';
+import { makeOrder, getDetails, updatePay, userOrder } from '../services/order';
 
 const ORDER_CREATE_REQUEST = 'ORDER_CREATE_REQUEST';
 const ORDER_CREATE_SUCESS = 'ORDER_CREATE_SUCESS';
@@ -12,6 +12,10 @@ const ORDER_PAY_REQUEST = 'ORDER_PAY_REQUEST';
 const ORDER_PAY_SUCESS = 'ORDER_PAY_SUCESS';
 const ORDER_PAY_FAIL = 'ORDER_PAY_FAIL';
 const ORDER_PAY_RESET = 'ORDER_PAY_RESET';
+
+const USER_ORDER_REQUEST = 'USER_ORDER_REQUEST';
+const USER_ORDER_SUCESS = 'USER_ORDER_SUCESS';
+const USER_ORDER_FAIL = 'USER_ORDER_FAIL';
 
 export const orderCreateReducer = (state = {}, action) => {
   switch (action.type) {
@@ -106,6 +110,37 @@ export const payOrder = (id, paymentResult) => async (dispatch, getState) => {
   } catch (error) {
     dispatch({
       type: ORDER_PAY_FAIL,
+      payload: error.response.data.message,
+    });
+  }
+};
+
+export const userOrderReducer = (state = { orders: [] }, action) => {
+  switch (action.type) {
+    case USER_ORDER_REQUEST:
+      return { loading: true };
+    case USER_ORDER_SUCESS:
+      return { loading: false, orders: action.payload };
+    case USER_ORDER_FAIL:
+      return { loading: false, error: action.payload };
+    default:
+      return state;
+  }
+};
+
+export const userOrderAction = () => async (dispatch, getState) => {
+  try {
+    dispatch({ type: USER_ORDER_REQUEST });
+
+    const {
+      userLogin: { userInfo },
+    } = getState();
+
+    const data = await userOrder(userInfo.token);
+    dispatch({ type: USER_ORDER_SUCESS, payload: data });
+  } catch (error) {
+    dispatch({
+      type: USER_ORDER_FAIL,
       payload: error.response.data.message,
     });
   }

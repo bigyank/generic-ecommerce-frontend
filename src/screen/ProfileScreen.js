@@ -7,12 +7,15 @@ import {
   FormGroup,
   FormLabel,
   FormControl,
+  Table,
 } from 'react-bootstrap';
+import { LinkContainer } from 'react-router-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import Loader from '../Components/Loader';
 import Message from '../Components/Message';
 import { userDetailsAction } from '../reducers/profileReducer';
 import { updateProfileAction } from '../reducers/updateProfileReducer';
+import { userOrderAction } from '../reducers/orderReducer';
 
 const RegisterScreen = ({ location, history }) => {
   const [name, setName] = useState('');
@@ -26,6 +29,9 @@ const RegisterScreen = ({ location, history }) => {
   const { success } = useSelector((state) => state.userUpdateProfile);
 
   const { userInfo } = useSelector((state) => state.userLogin);
+  const { error: ordersError, loading: ordersLoading, orders } = useSelector(
+    (state) => state.userOrder
+  );
 
   useEffect(() => {
     if (!userInfo) {
@@ -33,6 +39,7 @@ const RegisterScreen = ({ location, history }) => {
     } else {
       if (!user.name) {
         dispatch(userDetailsAction());
+        dispatch(userOrderAction());
       } else {
         setName(user.name);
         setEmail(user.email);
@@ -110,6 +117,55 @@ const RegisterScreen = ({ location, history }) => {
       </Col>
       <Col md={9}>
         <h2>orders</h2>
+        {ordersLoading ? (
+          <Loader />
+        ) : ordersError ? (
+          <Message variant="danger">{ordersError}</Message>
+        ) : (
+          <Table striped bordered hover responsive className="table-sm">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Date</th>
+                <th>Total</th>
+                <th>Paid</th>
+                <th>Delivered</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              {orders.map((order) => (
+                <tr key={order.id}>
+                  <td>{order.id}</td>
+                  <td>{order.createdAt.substring(0, 10)}</td>
+                  <td>${order.totalPrice}</td>
+                  <td>
+                    {order.isPaid ? (
+                      order.paidAt.substring(0, 10)
+                    ) : (
+                      <i className="fas fa-times" style={{ color: 'red' }}></i>
+                    )}
+                  </td>
+
+                  <td>
+                    {order.isDelivered ? (
+                      order.deliveredAt.substring(0, 10)
+                    ) : (
+                      <i className="fas fa-times" style={{ color: 'red' }}></i>
+                    )}
+                  </td>
+                  <td>
+                    <LinkContainer to={`/order/${order.id}`}>
+                      <Button variant="light" className="btn-sm">
+                        Details
+                      </Button>
+                    </LinkContainer>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </Table>
+        )}
       </Col>
     </Row>
   );
