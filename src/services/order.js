@@ -23,3 +23,18 @@ export const getDetails = async (token, id) => {
   const response = await axios.get(BASE_URL.concat(`/${id}`), config);
   return response.data;
 };
+
+export const updatePay = async (token, id, paymentResult) => {
+  const config = {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  };
+
+  const response = await axios.put(
+    BASE_URL.concat(`/${id}/pay`),
+    paymentResult,
+    config
+  );
+  return response.data;
+};

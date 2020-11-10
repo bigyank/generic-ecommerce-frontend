@@ -22,7 +22,7 @@ const OrderScreen = ({ match }) => {
 
   useEffect(() => {
     dispatch(getOrderDetails(orderId));
-  }, []);
+  }, [dispatch, orderId]);
 
   return (
     <>
@@ -143,9 +143,11 @@ const OrderScreen = ({ match }) => {
                     </Row>
                   </ListGroupItem>
 
-                  <ListGroupItem>
-                    {error && <Message variant="danger">{error}</Message>}
-                  </ListGroupItem>
+                  {error && (
+                    <ListGroupItem>
+                      <Message variant="danger">{error}</Message>
+                    </ListGroupItem>
+                  )}
                 </ListGroup>
               </Card>
             </Col>
