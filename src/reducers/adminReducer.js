@@ -1,9 +1,13 @@
-import { getAllUsers, deleteUser } from '../services/user';
+import { getAllUsers, deleteUser, getSingleUser } from '../services/user';
 
 const ALL_USER_LIST_REQUEST = 'ALL_USER_LIST_REQUEST';
 const ALL_USER_LIST_SUCESS = 'ALL_USER_LIST_SUCESS';
 const ALL_USER_LIST_FAIL = 'ALL_USER_LIST_FAIL';
 const ALL_USER_LIST_RESET = 'ALL_USER_LIST_RESET';
+
+const SINGLE_USER_REQUEST = 'SINGLE_USER_REQUEST';
+const SINGLE_USER_SUCESS = 'SINGLE_USER_SUCESS';
+const SINGLE_USER_FAIL = 'SINGLE_USER_FAIL';
 
 const USER_DELETE_REQUEST = 'USER_DELETE_REQUEST';
 const USER_DELETE_SUCESS = 'USER_DELETE_SUCESS';
@@ -38,6 +42,38 @@ export const userListAction = () => async (dispatch, getState) => {
   } catch (error) {
     dispatch({
       type: ALL_USER_LIST_FAIL,
+      payload: error.response.data.message,
+    });
+  }
+};
+
+export const singleUserReducer = (state = { user: {} }, action) => {
+  switch (action.type) {
+    case SINGLE_USER_REQUEST:
+      return { ...state, loading: true };
+    case SINGLE_USER_SUCESS:
+      return { loading: false, user: action.payload };
+    case SINGLE_USER_FAIL:
+      return { loading: false, error: action.payload };
+    default:
+      return state;
+  }
+};
+
+export const singleUserAction = (id) => async (dispatch, getState) => {
+  try {
+    dispatch({ type: SINGLE_USER_REQUEST });
+
+    const {
+      userLogin: { userInfo },
+    } = getState();
+
+    const singleUser = await getSingleUser(userInfo.token, id);
+
+    dispatch({ type: SINGLE_USER_SUCESS, payload: singleUser });
+  } catch (error) {
+    dispatch({
+      type: SINGLE_USER_FAIL,
       payload: error.response.data.message,
     });
   }

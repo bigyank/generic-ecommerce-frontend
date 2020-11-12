@@ -16,7 +16,11 @@ import {
   userOrderReducer,
 } from './reducers/orderReducer';
 
-import { userListReducer, userDeleteReducer } from './reducers/adminReducer';
+import {
+  userListReducer,
+  userDeleteReducer,
+  singleUserReducer,
+} from './reducers/adminReducer';
 
 const reducers = combineReducers({
   productList: productListReducer,
@@ -31,6 +35,7 @@ const reducers = combineReducers({
   orderPay: orderPayReducer,
   userOrder: userOrderReducer,
   userList: userListReducer,
+  singleUser: singleUserReducer,
   userDelete: userDeleteReducer,
 });
 

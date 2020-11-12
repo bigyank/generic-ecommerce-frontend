@@ -53,6 +53,17 @@ export const getAllUsers = async (token) => {
   return response.data;
 };
 
+export const getSingleUser = async (token, id) => {
+  const config = {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  };
+
+  const response = await axios.get(BASE_URL.concat(`/${id}`), config);
+  return response.data;
+};
+
 export const deleteUser = async (token, id) => {
   const config = {
     headers: {
