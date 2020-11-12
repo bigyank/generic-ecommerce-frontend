@@ -41,3 +41,14 @@ export const updateProfile = async (token, user) => {
   const response = await axios.put(BASE_URL.concat('/profile'), user, config);
   return response.data;
 };
+
+export const getAllUsers = async (token) => {
+  const config = {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  };
+
+  const response = await axios.get(BASE_URL.concat('/all'), config);
+  return response.data;
+};

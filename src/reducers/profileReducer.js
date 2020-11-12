@@ -3,6 +3,7 @@ import { userProfile } from '../services/user';
 const USER_DETAILS_REQUEST = 'USER_DETAILS_REQUEST';
 const USER_DETAILS_SUCESS = 'USER_DETAILS_SUCESS';
 const USER_DETAILS_FAIL = 'USER_DETAILS_FAIL';
+const USER_DETAILS_RESET = 'USER_DETAILS_RESET';
 
 export const userDeatilsReducer = (state = { user: {} }, action) => {
   switch (action.type) {
@@ -12,6 +13,8 @@ export const userDeatilsReducer = (state = { user: {} }, action) => {
       return { loading: false, user: action.payload };
     case USER_DETAILS_FAIL:
       return { loading: false, error: action.payload };
+    case USER_DETAILS_RESET:
+      return { user: {} };
     default:
       return state;
   }
