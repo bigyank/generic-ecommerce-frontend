@@ -4,18 +4,24 @@ import { Button, Table } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import Loader from '../Components/Loader';
 import Message from '../Components/Message';
-import { userListAction } from '../reducers/adminReducer';
+import { userListAction, userDeleteAction } from '../reducers/adminReducer';
 
-const UserListScreen = () => {
+const UserListScreen = ({ history }) => {
   const dispatch = useDispatch();
 
   const { loading, error, users } = useSelector((state) => state.userList);
+  const { userInfo } = useSelector((state) => state.userLogin);
+  const { sucess: deleteSucess } = useSelector((state) => state.userDelete);
 
   useEffect(() => {
-    dispatch(userListAction());
-  }, [dispatch]);
+    if (userInfo && userInfo.isAdmin) {
+      dispatch(userListAction());
+    } else {
+      history.push('/login');
+    }
+  }, [dispatch, history, userInfo, deleteSucess]);
 
-  const deleteUserHandler = (e) => e;
+  const deleteUserHandler = (id) => dispatch(userDeleteAction(id));
 
   return (
     <>

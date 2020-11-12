@@ -52,3 +52,14 @@ export const getAllUsers = async (token) => {
   const response = await axios.get(BASE_URL.concat('/all'), config);
   return response.data;
 };
+
+export const deleteUser = async (token, id) => {
+  const config = {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  };
+
+  const response = await axios.delete(BASE_URL.concat(`/${id}`), config);
+  return response.data;
+};
