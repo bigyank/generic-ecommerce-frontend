@@ -1,4 +1,9 @@
-import { getAllUsers, deleteUser, getSingleUser } from '../services/user';
+import {
+  getAllUsers,
+  deleteUser,
+  getSingleUser,
+  updateUser,
+} from '../services/user';
 
 const ALL_USER_LIST_REQUEST = 'ALL_USER_LIST_REQUEST';
 const ALL_USER_LIST_SUCESS = 'ALL_USER_LIST_SUCESS';
@@ -8,10 +13,15 @@ const ALL_USER_LIST_RESET = 'ALL_USER_LIST_RESET';
 const SINGLE_USER_REQUEST = 'SINGLE_USER_REQUEST';
 const SINGLE_USER_SUCESS = 'SINGLE_USER_SUCESS';
 const SINGLE_USER_FAIL = 'SINGLE_USER_FAIL';
+const SINGLE_USER_RESET = 'SINGLE_USER_RESET';
 
 const USER_DELETE_REQUEST = 'USER_DELETE_REQUEST';
 const USER_DELETE_SUCESS = 'USER_DELETE_SUCESS';
 const USER_DELETE_FAIL = 'USER_DELETE_FAIL';
+
+const USER_UPDATE_REQUEST = 'USER_UPDATE_REQUEST';
+const USER_UPDATE_SUCESS = 'USER_UPDATE_SUCESS';
+const USER_UPDATE_FAIL = 'USER_UPDATE_FAIL';
 
 export const userListReducer = (state = { users: [] }, action) => {
   switch (action.type) {
@@ -55,6 +65,8 @@ export const singleUserReducer = (state = { user: {} }, action) => {
       return { loading: false, user: action.payload };
     case SINGLE_USER_FAIL:
       return { loading: false, error: action.payload };
+    case SINGLE_USER_RESET:
+      return { user: {} };
     default:
       return state;
   }
@@ -106,6 +118,40 @@ export const userDeleteAction = (id) => async (dispatch, getState) => {
   } catch (error) {
     dispatch({
       type: USER_DELETE_FAIL,
+      payload: error.response.data.message,
+    });
+  }
+};
+
+export const userUpdateReducer = (state = {}, action) => {
+  switch (action.type) {
+    case USER_UPDATE_REQUEST:
+      return { loading: true };
+    case USER_UPDATE_SUCESS:
+      return { loading: false, sucess: true };
+    case USER_UPDATE_FAIL:
+      return { loading: false, error: action.payload };
+    default:
+      return state;
+  }
+};
+
+export const userUpdateAction = (user) => async (dispatch, getState) => {
+  try {
+    const { id, ...validUser } = user;
+    dispatch({ type: USER_UPDATE_REQUEST });
+
+    const {
+      userLogin: { userInfo },
+    } = getState();
+
+    const updatedUser = await updateUser(userInfo.token, id, validUser);
+
+    dispatch({ type: SINGLE_USER_SUCESS, payload: updatedUser });
+    dispatch({ type: USER_UPDATE_SUCESS });
+  } catch (error) {
+    dispatch({
+      type: USER_UPDATE_FAIL,
       payload: error.response.data.message,
     });
   }

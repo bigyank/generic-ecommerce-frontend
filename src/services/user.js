@@ -74,3 +74,14 @@ export const deleteUser = async (token, id) => {
   const response = await axios.delete(BASE_URL.concat(`/${id}`), config);
   return response.data;
 };
+
+export const updateUser = async (token, id, user) => {
+  const config = {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  };
+
+  const response = await axios.put(BASE_URL.concat(`/${id}`), user, config);
+  return response.data;
+};

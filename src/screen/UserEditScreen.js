@@ -12,9 +12,9 @@ import { useDispatch, useSelector } from 'react-redux';
 import Loader from '../Components/Loader';
 import Message from '../Components/Message';
 import FormContainer from '../Components/FormContainer';
-import { singleUserAction } from '../reducers/adminReducer';
+import { singleUserAction, userUpdateAction } from '../reducers/adminReducer';
 
-const UserEditScreen = ({ match }) => {
+const UserEditScreen = ({ match, history }) => {
   const userId = match.params.id;
 
   const [name, setName] = useState('');
@@ -23,11 +23,19 @@ const UserEditScreen = ({ match }) => {
 
   const dispatch = useDispatch();
 
+  const { userInfo } = useSelector((state) => state.userLogin);
   const { error, loading, user } = useSelector((state) => state.singleUser);
+  const { error: errorUpdate, loading: loadingUpdate } = useSelector(
+    (state) => state.userUpdate
+  );
 
   useEffect(() => {
-    dispatch(singleUserAction(userId));
-  }, [userId, dispatch]);
+    if (userInfo && userInfo.isAdmin) {
+      dispatch(singleUserAction(userId));
+    } else {
+      history.push('/login');
+    }
+  }, [userId, dispatch, history, userInfo]);
 
   useEffect(() => {
     if (user.name) {
@@ -39,6 +47,7 @@ const UserEditScreen = ({ match }) => {
 
   const handleLogin = (e) => {
     e.preventDefault();
+    dispatch(userUpdateAction({ id: userId, name, email, isAdmin }));
   };
 
   return (
@@ -49,6 +58,11 @@ const UserEditScreen = ({ match }) => {
       <FormContainer>
         <h1>Edit User</h1>
 
+        {loadingUpdate ? (
+          <Loader />
+        ) : errorUpdate ? (
+          <Message variant="danger">{errorUpdate}</Message>
+        ) : null}
         {loading ? (
           <Loader />
         ) : error ? (
