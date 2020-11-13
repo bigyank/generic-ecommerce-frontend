@@ -49,3 +49,29 @@ export const userOrder = async (token) => {
   const response = await axios.get(BASE_URL.concat('/myorders'), config);
   return response.data;
 };
+
+export const getAllOrder = async (token) => {
+  const config = {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  };
+
+  const response = await axios.get(BASE_URL, config);
+  return response.data;
+};
+
+export const updateOrder = async (token, id) => {
+  const config = {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  };
+
+  const response = await axios.put(
+    BASE_URL.concat(`/${id}/deliver`),
+    {},
+    config
+  );
+  return response.data;
+};

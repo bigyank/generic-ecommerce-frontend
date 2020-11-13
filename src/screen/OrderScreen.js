@@ -6,23 +6,37 @@ import {
   Image,
   ListGroupItem,
   Card,
+  Button,
 } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import Message from '../Components/Message';
 import Loader from '../Components/Loader';
 import { Link } from 'react-router-dom';
 import { getOrderDetails } from '../reducers/orderReducer';
+import { orderUpdateAction } from '../reducers/adminReducer';
 
-const OrderScreen = ({ match }) => {
+const OrderScreen = ({ match, history }) => {
   const dispatch = useDispatch();
 
   const orderId = match.params.id;
 
+  const { userInfo } = useSelector((state) => state.userLogin);
   const { order, loading, error } = useSelector((state) => state.orderDetails);
 
+  const { loading: updateLoading, sucess: sucessDelivered } = useSelector(
+    (state) => state.orderUpdate
+  );
+
   useEffect(() => {
+    if (!userInfo) {
+      return history.push('/login');
+    }
     dispatch(getOrderDetails(orderId));
-  }, [dispatch, orderId]);
+  }, [dispatch, orderId, sucessDelivered, history, userInfo]);
+
+  const updateHandler = () => {
+    dispatch(orderUpdateAction(order.id));
+  };
 
   return (
     <>
@@ -146,6 +160,15 @@ const OrderScreen = ({ match }) => {
                   {error && (
                     <ListGroupItem>
                       <Message variant="danger">{error}</Message>
+                    </ListGroupItem>
+                  )}
+
+                  {updateLoading && <Loader />}
+                  {userInfo && userInfo.isAdmin && !order.isDelivered && (
+                    <ListGroupItem>
+                      <Button block onClick={updateHandler}>
+                        Mark Delivered
+                      </Button>
                     </ListGroupItem>
                   )}
                 </ListGroup>

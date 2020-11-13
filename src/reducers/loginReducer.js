@@ -37,5 +37,6 @@ export const userLogoutAction = () => (dispatch) => {
   dispatch({ type: 'USER_DETAILS_RESET' });
   dispatch({ type: 'ALL_USER_LIST_RESET' });
   dispatch({ type: 'SINGLE_USER_RESET' });
+  dispatch({ type: 'ALL_ORDER_LIST_RESET' });
   dispatch({ type: USER_LOGOUT });
 };

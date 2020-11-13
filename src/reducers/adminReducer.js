@@ -4,7 +4,9 @@ import {
   getSingleUser,
   updateUser,
 } from '../services/user';
+import { updateOrder } from '../services/order';
 import { deleteProduct } from '../services/products';
+import { getAllOrder } from '../services/order';
 
 const ALL_USER_LIST_REQUEST = 'ALL_USER_LIST_REQUEST';
 const ALL_USER_LIST_SUCESS = 'ALL_USER_LIST_SUCESS';
@@ -27,6 +29,16 @@ const USER_UPDATE_FAIL = 'USER_UPDATE_FAIL';
 const PRODUCT_DELETE_REQUEST = 'PRODUCT_DELETE_REQUEST';
 const PRODUCT_DELETE_SUCESS = 'PRODUCT_DELETE_SUCESS';
 const PRODUCT_DELETE_FAIL = 'PRODUCT_DELETE_FAIL';
+
+const ALL_ORDER_LIST_REQUEST = 'ALL_ORDER_LIST_REQUEST';
+const ALL_ORDER_LIST_SUCESS = 'ALL_ORDER_LIST_SUCESS';
+const ALL_ORDER_LIST_FAIL = 'ALL_ORDER_LIST_FAIL';
+const ALL_ORDER_LIST_RESET = 'ALL_ORDER_LIST_RESET';
+
+const ORDER_UPDATE_REQUEST = 'ORDER_UPDATE_REQUEST';
+const ORDER_UPDATE_SUCESS = 'ORDER_UPDATE_SUCESS';
+const ORDER_UPDATE_FAIL = 'ORDER_UPDATE_FAIL';
+const ORDER_UPDATE_RESET = 'ORDER_UPDATE_RESET';
 
 export const userListReducer = (state = { users: [] }, action) => {
   switch (action.type) {
@@ -189,6 +201,74 @@ export const productDeleteAction = (id) => async (dispatch, getState) => {
   } catch (error) {
     dispatch({
       type: PRODUCT_DELETE_FAIL,
+      payload: error.response.data.message,
+    });
+  }
+};
+
+export const orderListReducer = (state = { orders: [] }, action) => {
+  switch (action.type) {
+    case ALL_ORDER_LIST_REQUEST:
+      return { loading: true };
+    case ALL_ORDER_LIST_SUCESS:
+      return { loading: false, orders: action.payload };
+    case ALL_ORDER_LIST_FAIL:
+      return { loading: false, error: action.payload };
+    case ALL_ORDER_LIST_RESET:
+      return { orders: [] };
+    default:
+      return state;
+  }
+};
+
+export const orderListAction = () => async (dispatch, getState) => {
+  try {
+    dispatch({ type: ALL_ORDER_LIST_REQUEST });
+
+    const {
+      userLogin: { userInfo },
+    } = getState();
+
+    const allOrders = await getAllOrder(userInfo.token);
+
+    dispatch({ type: ALL_ORDER_LIST_SUCESS, payload: allOrders });
+  } catch (error) {
+    dispatch({
+      type: ALL_ORDER_LIST_FAIL,
+      payload: error.response.data.message,
+    });
+  }
+};
+
+export const orderUpdateReducer = (state = {}, action) => {
+  switch (action.type) {
+    case ORDER_UPDATE_REQUEST:
+      return { loading: true };
+    case ORDER_UPDATE_SUCESS:
+      return { loading: false, sucess: true };
+    case ORDER_UPDATE_FAIL:
+      return { loading: false, error: action.payload };
+    case ORDER_UPDATE_RESET:
+      return {};
+    default:
+      return state;
+  }
+};
+
+export const orderUpdateAction = (id) => async (dispatch, getState) => {
+  try {
+    dispatch({ type: ORDER_UPDATE_REQUEST });
+
+    const {
+      userLogin: { userInfo },
+    } = getState();
+
+    const updatedOrder = await updateOrder(userInfo.token, id);
+
+    dispatch({ type: ORDER_UPDATE_SUCESS, payload: updatedOrder });
+  } catch (error) {
+    dispatch({
+      type: ORDER_UPDATE_FAIL,
       payload: error.response.data.message,
     });
   }
