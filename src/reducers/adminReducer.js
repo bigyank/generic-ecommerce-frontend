@@ -4,6 +4,7 @@ import {
   getSingleUser,
   updateUser,
 } from '../services/user';
+import { deleteProduct } from '../services/products';
 
 const ALL_USER_LIST_REQUEST = 'ALL_USER_LIST_REQUEST';
 const ALL_USER_LIST_SUCESS = 'ALL_USER_LIST_SUCESS';
@@ -22,6 +23,10 @@ const USER_DELETE_FAIL = 'USER_DELETE_FAIL';
 const USER_UPDATE_REQUEST = 'USER_UPDATE_REQUEST';
 const USER_UPDATE_SUCESS = 'USER_UPDATE_SUCESS';
 const USER_UPDATE_FAIL = 'USER_UPDATE_FAIL';
+
+const PRODUCT_DELETE_REQUEST = 'PRODUCT_DELETE_REQUEST';
+const PRODUCT_DELETE_SUCESS = 'PRODUCT_DELETE_SUCESS';
+const PRODUCT_DELETE_FAIL = 'PRODUCT_DELETE_FAIL';
 
 export const userListReducer = (state = { users: [] }, action) => {
   switch (action.type) {
@@ -152,6 +157,38 @@ export const userUpdateAction = (user) => async (dispatch, getState) => {
   } catch (error) {
     dispatch({
       type: USER_UPDATE_FAIL,
+      payload: error.response.data.message,
+    });
+  }
+};
+
+export const productDeleteReducer = (state = {}, action) => {
+  switch (action.type) {
+    case PRODUCT_DELETE_REQUEST:
+      return { loading: true };
+    case PRODUCT_DELETE_SUCESS:
+      return { loading: false, sucess: true };
+    case PRODUCT_DELETE_FAIL:
+      return { loading: false, error: action.payload };
+    default:
+      return state;
+  }
+};
+
+export const productDeleteAction = (id) => async (dispatch, getState) => {
+  try {
+    dispatch({ type: PRODUCT_DELETE_REQUEST });
+
+    const {
+      userLogin: { userInfo },
+    } = getState();
+
+    await deleteProduct(userInfo.token, id);
+
+    dispatch({ type: PRODUCT_DELETE_SUCESS });
+  } catch (error) {
+    dispatch({
+      type: PRODUCT_DELETE_FAIL,
       payload: error.response.data.message,
     });
   }
