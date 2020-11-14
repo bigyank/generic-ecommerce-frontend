@@ -45,7 +45,7 @@ const UserEditScreen = ({ match, history }) => {
     }
   }, [user]);
 
-  const handleLogin = (e) => {
+  const handleUpdate = (e) => {
     e.preventDefault();
     dispatch(userUpdateAction({ id: userId, name, email, isAdmin }));
   };
@@ -68,7 +68,7 @@ const UserEditScreen = ({ match, history }) => {
         ) : error ? (
           <Message variant="danger">{error}</Message>
         ) : (
-          <Form onSubmit={handleLogin}>
+          <Form onSubmit={handleUpdate}>
             <FormGroup controlId="name">
               <FormLabel>Name</FormLabel>
               <FormControl
