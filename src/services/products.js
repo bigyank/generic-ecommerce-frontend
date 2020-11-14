@@ -22,3 +22,14 @@ export const deleteProduct = async (token, id) => {
   const response = await axios.delete(BASE_URL.concat(`/${id}`), config);
   return response.data;
 };
+
+export const createProduct = async (token) => {
+  const config = {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  };
+
+  const response = await axios.post(BASE_URL, {}, config);
+  return response.data;
+};
