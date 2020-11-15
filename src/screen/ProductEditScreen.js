@@ -6,6 +6,7 @@ import {
   FormGroup,
   FormLabel,
   FormControl,
+  FormFile,
 } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import Loader from '../Components/Loader';
@@ -13,6 +14,8 @@ import Message from '../Components/Message';
 import FormContainer from '../Components/FormContainer';
 import { itemAction } from '../reducers/itemReducer';
 import { productUpdateAction } from '../reducers/productReducers';
+
+import { uploadFile } from '../services/fileUpload';
 
 const ProductEditScreen = ({ match, history }) => {
   const productId = match.params.id;
@@ -24,6 +27,7 @@ const ProductEditScreen = ({ match, history }) => {
   const [category, setCategory] = useState('');
   const [countInStock, setCountInStock] = useState(0);
   const [description, setDescription] = useState('');
+  const [uploading, setUploading] = useState(false);
 
   const dispatch = useDispatch();
 
@@ -60,6 +64,22 @@ const ProductEditScreen = ({ match, history }) => {
       }
     }
   }, [product, userInfo, history, dispatch, productId, updateSucess]);
+
+  const uploadFileHandle = async (e) => {
+    const file = e.target.files[0];
+    const formData = new FormData();
+    formData.append('image', file);
+    setUploading(true);
+
+    try {
+      const uploadedImage = await uploadFile(formData);
+      setImage(uploadedImage);
+      setUploading(false);
+    } catch (error) {
+      console.log(error);
+      setUploading(false);
+    }
+  };
 
   const handleEdit = (e) => {
     e.preventDefault();
@@ -121,6 +141,13 @@ const ProductEditScreen = ({ match, history }) => {
                 value={image}
                 onChange={({ target }) => setImage(target.value)}
               ></FormControl>
+              <FormFile
+                id="image-file"
+                label="Choose File"
+                custom
+                onChange={uploadFileHandle}
+              ></FormFile>
+              {uploading && <Loader />}
             </FormGroup>
 
             <FormGroup controlId="brand">
