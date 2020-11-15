@@ -12,6 +12,7 @@ import Loader from '../Components/Loader';
 import Message from '../Components/Message';
 import FormContainer from '../Components/FormContainer';
 import { itemAction } from '../reducers/itemReducer';
+import { productUpdateAction } from '../reducers/productReducers';
 
 const ProductEditScreen = ({ match, history }) => {
   const productId = match.params.id;
@@ -31,25 +32,50 @@ const ProductEditScreen = ({ match, history }) => {
     (state) => state.productDetail
   );
 
+  const {
+    loading: updateLoading,
+    error: updateError,
+    sucess: updateSucess,
+  } = useSelector((state) => state.productUpdate);
+
   useEffect(() => {
     if (!userInfo || !userInfo.isAdmin) {
       return history.push('/login');
     }
 
-    if (!product.name || product.id !== productId) {
-      dispatch(itemAction(productId));
+    if (updateSucess) {
+      dispatch({ type: 'PRODUCT_UPDATE_RESET' });
+      history.push('/admin/productlist');
     } else {
-      setName(product.name);
-      setePrice(product.price);
-      setImage(product.image);
-      setBrand(product.brand);
-      setCategory(product.category);
-      setCountInStock(product.countInStock);
-      setDescription(product.description);
+      if (!product.name || product.id !== productId) {
+        dispatch(itemAction(productId));
+      } else {
+        setName(product.name);
+        setePrice(product.price);
+        setImage(product.image);
+        setBrand(product.brand);
+        setCategory(product.category);
+        setCountInStock(product.countInStock);
+        setDescription(product.description);
+      }
     }
-  }, [product, userInfo, history, dispatch, productId]);
+  }, [product, userInfo, history, dispatch, productId, updateSucess]);
 
-  const handleEdit = (e) => e;
+  const handleEdit = (e) => {
+    e.preventDefault();
+    dispatch(
+      productUpdateAction({
+        id: productId,
+        name,
+        price,
+        image,
+        brand,
+        category,
+        description,
+        countInStock,
+      })
+    );
+  };
 
   return (
     <>
@@ -58,6 +84,8 @@ const ProductEditScreen = ({ match, history }) => {
       </Link>
       <FormContainer>
         <h1>Edit Product</h1>
+        {updateLoading && <Loader />}
+        {updateError && <Message variant="danger">{updateError}</Message>}
 
         {loading ? (
           <Loader />

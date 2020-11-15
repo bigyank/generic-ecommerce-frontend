@@ -1,4 +1,8 @@
-import { getProducts, createProduct } from '../services/products';
+import {
+  getProducts,
+  createProduct,
+  updateProduct,
+} from '../services/products';
 
 const PRODUCT_LIST_REQUEST = 'PRODUCT_LIST_REQUEST';
 const PRODUCT_LIST_SUCESS = 'PRODUCT_LIST_SUCESS';
@@ -8,6 +12,11 @@ const PRODUCT_CREATE_REQUEST = 'PRODUCT_CREATE_REQUEST';
 const PRODUCT_CREATE_SUCESS = 'PRODUCT_CREATE_SUCESS';
 const PRODUCT_CREATE_FAIL = 'PRODUCT_CREATE_FAIL';
 const PRODUCT_CREATE_RESET = 'PRODUCT_CREATE_RESET';
+
+const PRODUCT_UPDATE_REQUEST = 'PRODUCT_UPDATE_REQUEST';
+const PRODUCT_UPDATE_SUCESS = 'PRODUCT_UPDATE_SUCESS';
+const PRODUCT_UPDATE_FAIL = 'PRODUCT_UPDATE_FAIL';
+const PRODUCT_UPDATE_RESET = 'PRODUCT_UPDATE_RESET';
 
 export const productListReducer = (state = { products: [] }, action) => {
   switch (action.type) {
@@ -61,6 +70,40 @@ export const productCreateAction = () => async (dispatch, getState) => {
   } catch (error) {
     dispatch({
       type: PRODUCT_CREATE_FAIL,
+      payload: error.response.data.message,
+    });
+  }
+};
+
+export const productUpdateReducer = (state = { product: {} }, action) => {
+  switch (action.type) {
+    case PRODUCT_UPDATE_REQUEST:
+      return { loading: true };
+    case PRODUCT_UPDATE_SUCESS:
+      return { loading: false, sucess: true, product: action.payload };
+    case PRODUCT_UPDATE_FAIL:
+      return { loading: false, error: action.payload };
+    case PRODUCT_UPDATE_RESET:
+      return { product: {} };
+    default:
+      return state;
+  }
+};
+
+export const productUpdateAction = (product) => async (dispatch, getState) => {
+  try {
+    dispatch({ type: PRODUCT_UPDATE_REQUEST });
+
+    const {
+      userLogin: { userInfo },
+    } = getState();
+
+    const updatedProduct = await updateProduct(userInfo.token, product);
+
+    dispatch({ type: PRODUCT_UPDATE_SUCESS, payload: updatedProduct });
+  } catch (error) {
+    dispatch({
+      type: PRODUCT_UPDATE_FAIL,
       payload: error.response.data.message,
     });
   }
