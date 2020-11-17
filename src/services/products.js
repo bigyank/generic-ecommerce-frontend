@@ -49,3 +49,13 @@ export const updateProduct = async (token, product) => {
   );
   return response.data;
 };
+
+export const createReview = async (token, id, review) => {
+  const config = {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  };
+
+  await axios.post(BASE_URL.concat(`/${id}/reviews`), review, config);
+};

@@ -2,6 +2,7 @@ import {
   getProducts,
   createProduct,
   updateProduct,
+  createReview,
 } from '../services/products';
 
 const PRODUCT_LIST_REQUEST = 'PRODUCT_LIST_REQUEST';
@@ -17,6 +18,11 @@ const PRODUCT_UPDATE_REQUEST = 'PRODUCT_UPDATE_REQUEST';
 const PRODUCT_UPDATE_SUCESS = 'PRODUCT_UPDATE_SUCESS';
 const PRODUCT_UPDATE_FAIL = 'PRODUCT_UPDATE_FAIL';
 const PRODUCT_UPDATE_RESET = 'PRODUCT_UPDATE_RESET';
+
+const PRODUCT_CREATE_REVIEW_REQUEST = 'PRODUCT_CREATE_REVIEW_REQUEST';
+const PRODUCT_CREATE_REVIEW_SUCESS = 'PRODUCT_CREATE_REVIEW_SUCESS';
+const PRODUCT_CREATE_REVIEW_FAIL = 'PRODUCT_CREATE_REVIEW_FAIL';
+const PRODUCT_CREATE_REVIEW_RESET = 'PRODUCT_CREATE_REVIEW_RESET';
 
 export const productListReducer = (state = { products: [] }, action) => {
   switch (action.type) {
@@ -104,6 +110,43 @@ export const productUpdateAction = (product) => async (dispatch, getState) => {
   } catch (error) {
     dispatch({
       type: PRODUCT_UPDATE_FAIL,
+      payload: error.response.data.message,
+    });
+  }
+};
+
+export const productCreateReviewReducer = (state = {}, action) => {
+  switch (action.type) {
+    case PRODUCT_CREATE_REVIEW_REQUEST:
+      return { loading: true };
+    case PRODUCT_CREATE_REVIEW_SUCESS:
+      return { loading: false, sucess: true };
+    case PRODUCT_CREATE_REVIEW_FAIL:
+      return { loading: false, error: action.payload };
+    case PRODUCT_CREATE_REVIEW_RESET:
+      return {};
+    default:
+      return state;
+  }
+};
+
+export const productCreateReviewAction = (productID, review) => async (
+  dispatch,
+  getState
+) => {
+  try {
+    dispatch({ type: PRODUCT_CREATE_REVIEW_REQUEST });
+
+    const {
+      userLogin: { userInfo },
+    } = getState();
+
+    await createReview(userInfo.token, productID, review);
+
+    dispatch({ type: PRODUCT_CREATE_REVIEW_SUCESS });
+  } catch (error) {
+    dispatch({
+      type: PRODUCT_CREATE_REVIEW_FAIL,
       payload: error.response.data.message,
     });
   }

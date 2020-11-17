@@ -1,6 +1,6 @@
 import React from 'react';
 
-const Rating = ({ rating, numReviews }) => {
+const Rating = ({ rating, numReviews, userReview = false }) => {
   const isFloat = function (n) {
     return parseInt(n) !== n;
   };
@@ -25,7 +25,10 @@ const Rating = ({ rating, numReviews }) => {
           <i key={index} className="far fa-star"></i>
         ))}
       </span>
-      <span style={{ marginLeft: '0.5rem' }}>{numReviews} reviews</span>
+
+      {!userReview && (
+        <span style={{ marginLeft: '0.5rem' }}>{numReviews} reviews</span>
+      )}
     </div>
   );
 };
