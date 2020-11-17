@@ -2,8 +2,10 @@ import axios from 'axios';
 
 const BASE_URL = '/api/products';
 
-export const getProducts = async (keyword) => {
-  const response = await axios.get(BASE_URL.concat(`?keyword=${keyword}`));
+export const getProducts = async (keyword = '', pageNumber = '') => {
+  const response = await axios.get(
+    BASE_URL.concat(`?keyword=${keyword}&pageNumber=${pageNumber}`)
+  );
   return response.data;
 };
 

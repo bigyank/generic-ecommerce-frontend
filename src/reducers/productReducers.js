@@ -29,7 +29,12 @@ export const productListReducer = (state = { products: [] }, action) => {
     case PRODUCT_LIST_REQUEST:
       return { loading: true, products: [] };
     case PRODUCT_LIST_SUCESS:
-      return { loading: false, products: action.payload };
+      return {
+        loading: false,
+        products: action.payload.products,
+        pages: action.payload.pages,
+        page: action.payload.page,
+      };
     case PRODUCT_LIST_FAIL:
       return { loading: false, error: action.payload };
     default:
@@ -37,10 +42,10 @@ export const productListReducer = (state = { products: [] }, action) => {
   }
 };
 
-export const productListAction = (keyword = '') => async (dispatch) => {
+export const productListAction = (keyword, pageNumber) => async (dispatch) => {
   try {
     dispatch({ type: PRODUCT_LIST_REQUEST });
-    const allProducts = await getProducts(keyword);
+    const allProducts = await getProducts(keyword, pageNumber);
     dispatch({ type: PRODUCT_LIST_SUCESS, payload: allProducts });
   } catch (error) {
     dispatch({ type: PRODUCT_LIST_FAIL, payload: error.response.data.message });
