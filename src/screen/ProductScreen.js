@@ -41,11 +41,10 @@ const ProductScreen = ({ match, history }) => {
   const { userInfo } = useSelector((state) => state.userLogin);
 
   useEffect(() => {
+    dispatch({ type: 'PRODUCT_CREATE_REVIEW_RESET' });
     if (createReviewSucess) {
-      alert('Review submitted');
       setRating(0);
       setComment('');
-      dispatch({ type: 'PRODUCT_CREATE_REVIEW_RESET' });
     }
     dispatch(itemAction(id));
   }, [dispatch, id, createReviewSucess]);
@@ -139,7 +138,7 @@ const ProductScreen = ({ match, history }) => {
           </Row>
 
           <Row>
-            <Col md={6}>
+            <Col md={6} className="my-5">
               <h2>Reviews</h2>
               {product.reviews.length === 0 && (
                 <Message variant="info">No reviews</Message>
@@ -157,9 +156,13 @@ const ProductScreen = ({ match, history }) => {
                     <p>{review.comment}</p>
                   </ListGroupItem>
                 ))}
+              </ListGroup>
+            </Col>
 
+            <Col md={6} className="my-5">
+              <h2>Write a Review</h2>
+              <ListGroup variant="flush">
                 <ListGroupItem>
-                  <h2>Write a Review</h2>
                   {createReviewError && (
                     <Message variant="danger">{createReviewError}</Message>
                   )}

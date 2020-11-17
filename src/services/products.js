@@ -2,8 +2,8 @@ import axios from 'axios';
 
 const BASE_URL = '/api/products';
 
-export const getProducts = async () => {
-  const response = await axios.get(BASE_URL);
+export const getProducts = async (keyword) => {
+  const response = await axios.get(BASE_URL.concat(`?keyword=${keyword}`));
   return response.data;
 };
 

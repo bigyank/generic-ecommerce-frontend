@@ -36,10 +36,11 @@ function App() {
           <Route path="/cart/:id?" component={CartScreen} />
           <Route path="/admin/userlist" component={UserListScreen} />
           <Route path="/admin/user/:id/edit" component={UserEditScreen} />
-          <Route path="/" component={HomeScreen} exact />
           <Route path="/admin/productList" component={ProductListScreen} />
           <Route path="/admin/product/:id/edit" component={ProductEditScreen} />
           <Route path="/admin/orderlist" component={OrderListScreen} />
+          <Route path="/search/:keyword" component={HomeScreen} exact />
+          <Route path="/" component={HomeScreen} exact />
         </Container>
       </main>
       <Footer />

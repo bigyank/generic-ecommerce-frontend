@@ -37,10 +37,10 @@ export const productListReducer = (state = { products: [] }, action) => {
   }
 };
 
-export const productListAction = () => async (dispatch) => {
+export const productListAction = (keyword = '') => async (dispatch) => {
   try {
     dispatch({ type: PRODUCT_LIST_REQUEST });
-    const allProducts = await getProducts();
+    const allProducts = await getProducts(keyword);
     dispatch({ type: PRODUCT_LIST_SUCESS, payload: allProducts });
   } catch (error) {
     dispatch({ type: PRODUCT_LIST_FAIL, payload: error.response.data.message });
