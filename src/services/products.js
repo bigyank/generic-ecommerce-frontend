@@ -61,3 +61,8 @@ export const createReview = async (token, id, review) => {
 
   await axios.post(BASE_URL.concat(`/${id}/reviews`), review, config);
 };
+
+export const getTopRatedProducts = async () => {
+  const response = await axios.get(BASE_URL.concat('/top'));
+  return response.data;
+};

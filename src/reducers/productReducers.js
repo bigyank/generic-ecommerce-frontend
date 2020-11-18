@@ -3,6 +3,7 @@ import {
   createProduct,
   updateProduct,
   createReview,
+  getTopRatedProducts,
 } from '../services/products';
 
 const PRODUCT_LIST_REQUEST = 'PRODUCT_LIST_REQUEST';
@@ -23,6 +24,10 @@ const PRODUCT_CREATE_REVIEW_REQUEST = 'PRODUCT_CREATE_REVIEW_REQUEST';
 const PRODUCT_CREATE_REVIEW_SUCESS = 'PRODUCT_CREATE_REVIEW_SUCESS';
 const PRODUCT_CREATE_REVIEW_FAIL = 'PRODUCT_CREATE_REVIEW_FAIL';
 const PRODUCT_CREATE_REVIEW_RESET = 'PRODUCT_CREATE_REVIEW_RESET';
+
+const PRODUCT_TOP_REQUEST = 'PRODUCT_TOP_REQUEST';
+const PRODUCT_TOP_REQUEST_SUCESS = 'PRODUCT_TOP_REQUEST_SUCESS';
+const PRODUCT_TOP_REQUEST_FAIL = 'PRODUCT_TOP_REQUEST_FAIL';
 
 export const productListReducer = (state = { products: [] }, action) => {
   switch (action.type) {
@@ -152,6 +157,34 @@ export const productCreateReviewAction = (productID, review) => async (
   } catch (error) {
     dispatch({
       type: PRODUCT_CREATE_REVIEW_FAIL,
+      payload: error.response.data.message,
+    });
+  }
+};
+
+export const productTopRatedReducer = (state = { products: [] }, action) => {
+  switch (action.type) {
+    case PRODUCT_TOP_REQUEST:
+      return { loading: true, products: [] };
+    case PRODUCT_TOP_REQUEST_SUCESS:
+      return { loading: false, products: action.payload };
+    case PRODUCT_TOP_REQUEST_FAIL:
+      return { loading: false, error: action.payload };
+    default:
+      return state;
+  }
+};
+
+export const topRatedProductAction = () => async (dispatch, getState) => {
+  try {
+    dispatch({ type: PRODUCT_TOP_REQUEST });
+
+    const topRatedProducts = await getTopRatedProducts();
+
+    dispatch({ type: PRODUCT_TOP_REQUEST_SUCESS, payload: topRatedProducts });
+  } catch (error) {
+    dispatch({
+      type: PRODUCT_TOP_REQUEST_FAIL,
       payload: error.response.data.message,
     });
   }
